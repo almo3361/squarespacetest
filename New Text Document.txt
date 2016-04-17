@@ -1,0 +1,117 @@
+*jQuery*
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+*Oversetting av dato*
+<script>
+/* List of months in Norwegian */
+var month = new Array(12);
+    month[0] = "januar";
+    month[1] = "februar";
+    month[2] = "mars";
+    month[3] = "april";
+    month[4] = "mai";
+    month[5] = "juni";
+    month[6] = "juli";
+    month[7] = "august";
+    month[8] = "september";
+    month[9] = "oktober";
+    month[10]= "november";
+    month[11]= "desember";
+
+Y.use('node', 'node-load', function(Y) {
+  Y.on('domready', function() { 
+
+    /* (1) Reformat blog entries published dates */
+    Y.all('time.published').each(
+      function() {
+      var pdate = new Date(this.getAttribute('datetime'));
+      this.setHTML(pdate.getDate() + " " 
+          + month[pdate.getMonth()] + " " 
+          + pdate.getFullYear());
+      }
+    );
+
+  });
+});
+</script>
+
+
+*Blogg - neste/forrige side*
+<script>
+
+Y.on('domready', function () {
+
+    //blog: previous articles
+    Y.all("span.prev-label").setHTML("Forrige side");
+
+    //blog: next articles
+    Y.all("span.next-label").setHTML("Neste side");
+    
+    //single post: next article
+    Y.all(".blog-item span.next-label").setHTML("Eldre innlegg");
+
+    //single post: previous article
+    Y.all(".blog-item span.prev-label").setHTML("Nyere innlegg");
+});
+
+</script>
+
+
+
+
+
+*oversett kommentarer og liker*
+<script>
+$(window).load(function() {
+
+    /*"Comment" (verb)*/
+commentThisText = "Skriv kommentar";
+
+/*"Comment" (one comment)*/
+oneCommentText = "Kommentar"
+
+/*"Comments" (2-? comments)*/
+multipleCommentsText = "Kommentarer"
+
+/*"Like" (1 like)*/
+singleLikeText = "Liker";
+
+/*"Likes"  (2-? likes)*/
+multipleLikesText = "Liker";
+
+
+/*Magic starts here*/
+var hasNumber = /\d/;
+
+String.prototype.contains = function(it) 
+{ 
+   return this.indexOf(it) != -1; 
+};
+
+jQuery('.comments').each(function() {
+var str = $("a", this).text();
+
+if (str.contains("1 Comment")){
+  $("a", this).text("1 " + oneCommentText);
+} else if (! hasNumber.test(str)){
+    $("a", this).text(commentThisText);
+}  else{
+    var number = str.replace(/[^0-9]/g, '');
+  $("a", this).text(number + " " + multipleCommentsText);
+    
+}  
+});
+
+jQuery('.like-count').each(function() {
+var str = $(this).text();
+
+if (str.contains("1 Like")){
+  $(this).html("1 " + singleLikeText);
+}  else{
+    var number = str.replace(/[^0-9]/g, '');
+  $(this).text(number + " " + multipleLikesText );
+}  
+});
+    
+});
+</script>
